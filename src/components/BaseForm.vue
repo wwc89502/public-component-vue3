@@ -528,7 +528,7 @@
 import dayjs from 'dayjs';
 import weekYear from 'dayjs/plugin/weekYear'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
-import { ref, defineProps, defineEmits, reactive, defineExpose } from 'vue'
+import { ref, reactive } from 'vue'
 dayjs.extend(weekYear)
 dayjs.extend(weekOfYear)
 const props = defineProps(['option', 'model'])
