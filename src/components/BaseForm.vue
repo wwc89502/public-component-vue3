@@ -594,7 +594,7 @@ const setRef = (name, el) => {
   refs[`${name}Ref`] = el
 }
 const getRef = (name) => {
-  return refs[`${name}Ref`]?.[0]
+  return refs[`${name}Ref`]
 }
 const getWeek = (src) => {
   let label = ''
