@@ -6,6 +6,7 @@
 
 > 基于 element-plus、dayjs
 > 待完成功能：在线字典
+> 
 
 ```vue
 <base-form
@@ -72,7 +73,7 @@ const submitHandle = (e, done) => {
   * type 该表单Item的类型(所有的表单组件，如下)
 
     `radio`/`checkbox`/`number`/`select`/`cascader`/`cascaderPanel`/`switch`/`slider`
-    /`time`/`year`/`month`/`date`/`dates`/`week`
+    /`timeSelect`/`time`/`year`/`month`/`date`/`dates`/`week`
     /`datetime`/`timerange`/`daterange`/`datetimerange`/`monthrange`
     /`upload`/`rate`/`color`/`transfer`
 

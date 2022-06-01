@@ -16,7 +16,6 @@
       :class="{
         detail: option.detail
       }"
-      width="100%"
   >
     <el-row :gutter="option.gutter">
       <el-col
@@ -119,6 +118,7 @@
                   :placeholder="item.placeholder"
                   :controls="item.controls"
                   :controls-position="item.controlsPosition"
+                  :value-on-clear="item.valueOnClear"
                   @change="elHandle(item.onChange, $event)"
                   @blur="elHandle(item.onBlur, $event)"
                   @focus="elHandle(item.onFocus, $event)"
@@ -131,9 +131,11 @@
                   v-model="model[item.name]"
                   :multiple="item.multiple"
                   :disabled="item.disabled"
+                  :effect="item.effect"
                   :value-key="item.valueKey"
                   :clearable="item.clearable"
                   :collapse-tags="item.collapseTags"
+                  :collapse-tags-tooltip="item.collapseTagsTooltip"
                   :multiple-limit="item.multipleLimit"
                   :autocomplete="item.autocomplete"
                   :placeholder="item.placeholder"
@@ -142,6 +144,12 @@
                   :filter-method="item.filterMethod"
                   :remote="item.remote"
                   :remote-method="item.remoteMethod"
+                  :teleported="item.teleported"
+                  :persistent="item.persistent"
+                  :tag-type="item.tagType"
+                  :suffix-icon="item.suffixIcon"
+                  :clear-icon="item.clearIcon"
+                  :fit-input-width="item.fitInputWidth"
                   :loading="item.loading"
                   :loading-text="item.loadingText"
                   :no-match-text="item.noMatchText"
@@ -149,7 +157,6 @@
                   :popper-class="item.popperClass"
                   :reserve-keyword="item.reserveKeyword"
                   :default-first-option="item.defaultFirstOption"
-                  :popper-append-to-body="item.popperAppendToBody"
                   :automatic-dropdown="item.automaticDropdown"
                   @change="elHandle(item.onChange, $event)"
                   @visible-change="elHandle(item.onVisibleChange, $event)"
@@ -193,10 +200,13 @@
                   :placeholder="item.placeholder"
                   :clearable="item.clearable"
                   :collapse-tags="item.collapseTags"
+                  :collapse-tags-tooltip="item.collapseTagsTooltip"
                   :separator="item.separator"
                   :filterable="item.filterable"
                   :filter-method="item.filterMethod"
                   :debounce="item.debounce"
+                  :tag-type="item.tagType"
+                  :teleported="item.teleported"
                   :before-filter="item.beforeFilter"
                   :popper-class="item.popperClass"
                   :show-all-levels="item.showAllLevels"
@@ -223,16 +233,20 @@
                   :ref="el => { refs[`${item.name}Ref`] = el }"
                   v-model="model[item.name]"
                   :disabled="item.disabled"
+                  :loading="item.loading"
+                  :inline-prompt="item.inlinePrompt"
                   :width="item.width"
-                  :active-icon-class="item.activeIconClass"
-                  :inactive-icon-class="item.inactiveIconClass"
+                  :active-icon="item.activeIcon"
+                  :inactive-icon="item.inactiveIcon"
                   :active-text="item.activeText"
                   :inactive-text="item.inactiveText"
                   :active-value="item.activeValue"
                   :inactive-value="item.inactiveValue"
                   :active-color="item.activeColor"
+                  :border-color="item.borderColor"
                   :inactive-color="item.inactiveColor"
                   :validate-event="item.validateEvent"
+                  :before-change="item.beforeChange"
                   @change="elHandle(item.onChange, $event)"
               ></el-switch>
             </template>
@@ -248,19 +262,47 @@
                   :min="item.min"
                   :max="item.max"
                   :range="item.range"
+                  :range-start-label="item.rangeStartLabel"
+                  :range-end-label="item.rangeEndLabel"
                   :step="item.step"
                   :show-input="item.showInput"
                   :show-input-controls="item.showInputControls"
                   :show-stops="item.showStops"
                   :show-tooltip="item.showTooltip"
                   :format-tooltip="item.formatTooltip"
+                  :format-value-text="item.formatValueText"
                   :vertical="item.vertical"
                   :height="item.height"
                   :label="item.label"
+                  :tooltip-class="item.tooltipClass"
                   :debounce="item.debounce"
                   @change="elHandle(item.onChange, $event)"
                   @input="elHandle(item.onInput, $event)"
               ></el-slider>
+            </template>
+            <template v-else-if="item.type === 'timeSelect'">
+              <el-time-select
+                  v-if="!option.detail"
+                  :ref="el => { refs[`${item.name}Ref`] = el }"
+                  v-model="model[item.name]"
+                  :disabled="item.disabled"
+                  :editable="item.editable"
+                  :clearable="item.clearable"
+                  :format="item.format"
+                  :effect="item.effect"
+                  :prefix-icon="item.prefixIcon"
+                  :clear-icon="item.clearIcon"
+                  :placeholder="item.placeholder"
+                  :min-time="item.minTime"
+                  :max-time="item.maxTime"
+                  :start="item.start"
+                  :end="item.end"
+                  :step="item.step"
+                  @change="elHandle(item.onChange, $event)"
+                  @blur="elHandle(item.onBlur, $event)"
+                  @focus="elHandle(item.onFocus, $event)"
+              ></el-time-select>
+              <span class="detail-input" v-else>{{ model[item.name] }}</span>
             </template>
             <template v-else-if="item.type === 'time'">
               <el-time-picker
@@ -277,12 +319,18 @@
                   :popper-class="item.popperClass"
                   :picker-options="item.pickerOptions"
                   :value-format="item.valueFormat || getValueFormat(item.type)"
+                  :format="item.format"
                   :default-value="item.defaultValue"
                   :prefix-icon="item.prefixIcon"
                   :clear-icon="item.clearIcon"
+                  :disabled-hours="item.disabledHours"
+                  :disabled-minutes="item.disabledMinutes"
+                  :disabled-seconds="item.disabledSeconds"
+                  :teleported="item.teleported"
                   @change="elHandle(item.onChange, $event)"
                   @blur="elHandle(item.onBlur, $event)"
                   @focus="elHandle(item.onFocus, $event)"
+                  @visible-change="elHandle(item.onVisibleChange, $event)"
               ></el-time-picker>
               <span class="detail-input" v-else>{{ model[item.name] }}</span>
             </template>
@@ -310,6 +358,9 @@
                   @change="elHandle(item.onChange, $event)"
                   @blur="elHandle(item.onBlur, $event)"
                   @focus="elHandle(item.onFocus, $event)"
+                  @calendar-change="elHandle(item.onCalendarChange, $event)"
+                  @panel-change="elHandle(item.onPanelChange, $event)"
+                  @visible-change="elHandle(item.onVisibleChange, $event)"
               ></el-date-picker>
               <template v-else>
                 <span class="detail-input" v-if="item.type === 'week'">{{ getWeek(model[item.name]).label }}</span>
@@ -335,12 +386,18 @@
                   :popper-class="item.popperClass"
                   :picker-options="item.pickerOptions"
                   :value-format="item.valueFormat || getValueFormat(item.type)"
+                  :format="item.format"
                   :default-value="item.defaultValue"
                   :prefix-icon="item.prefixIcon"
                   :clear-icon="item.clearIcon"
+                  :disabled-hours="item.disabledHours"
+                  :disabled-minutes="item.disabledMinutes"
+                  :disabled-seconds="item.disabledSeconds"
+                  :teleported="item.teleported"
                   @change="elHandle(item.onChange, $event)"
                   @blur="elHandle(item.onBlur, $event)"
                   @focus="elHandle(item.onFocus, $event)"
+                  @visible-change="elHandle(item.onVisibleChange, $event)"
               ></el-time-picker>
               <span class="detail-input" v-else>{{ model[item.name] && model[item.name].join(` ${item.rangeSeparator || option.rangeSeparator || '至'} `) }}</span>
             </template>

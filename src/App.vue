@@ -349,8 +349,13 @@ const option = reactive({
       type: 'dates'
     },
     {
-      label: 'time',
+      label: 'timeSelect',
       name: 'n4',
+      type: 'timeSelect'
+    },
+    {
+      label: 'time',
+      name: 'n4c',
       type: 'time'
     },
     {
